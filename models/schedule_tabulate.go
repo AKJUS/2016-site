@@ -366,12 +366,14 @@ func buildList(schedule []*ScheduleItem, dates []time.Time) []WeekScheduleList {
 		// it comes from makescheduleslice see the s.fill line. needed otherwise the first show on monday will start at 6am on table view
 		// or not, theres jukeboxes coming from elsewhere aswell
 		if len(days[day].Shows) > 0 {
-			if days[day].Shows[len(days[day].Shows)-1].IsSustainer(){
-				days[day].Shows = days[day].Shows[:len(days[day].Shows) - 1]
-			}
 			if days[day].Shows[0].IsSustainer(){
 				days[day].Shows = days[day].Shows[1:]
     		}
+			if len(days[day].Shows) > 0 {
+				if days[day].Shows[len(days[day].Shows)-1].IsSustainer(){
+					days[day].Shows = days[day].Shows[:len(days[day].Shows) - 1]
+				}
+			}
     	}
   	}
 	return days
