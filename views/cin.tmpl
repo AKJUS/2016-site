@@ -1,9 +1,5 @@
 {{define "title"}}{{.PageContext.ShortName}} | Candidate Interview Night{{end}}
 
-{{define "head"}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-{{end}}
-
 {{define "content"}}
 <div class="container-fluid bg-cin-2">
 <div class="container bg-cin bg-cin-space">
@@ -17,13 +13,13 @@
     <div class="container-fluid container-padded text-center">
       <div class="row">
           <div class="col-md-4 align-self-center">
-            <a href="//twitter.com/{{.PageContext.MainTwitter}}"><i class="fab fa-twitter fa-2x"></i><h3>Find us on Twitter</h3></a>
+            <a href="//instagram.com/{{.PageContext.MainInstagram}}" class="cin-link"><i class="fab fa-instagram fa-2x"></i><h3>Find us on Instagram</h3></a>
           </div>
           <div class="col-md-4 align-self-center">
             <h3>Join in with the conversation<br>{{.PageContext.CINHashtag}}</h3>
           </div>
           <div class="col-md-4 align-self-center">
-            <a href="//facebook.com/{{.PageContext.MainFacebook}}"><i class="fab fa-facebook fa-2x"></i><h3>Find us on Facebook</h3></a>
+            <a href="//tiktok.com/{{.PageContext.MainTikTok}}" class="cin-link"><i class="fab fa-tiktok fa-2x"></i><h3>Find us on TikTok</h3></a>
           </div>
       </div>
     </div>
