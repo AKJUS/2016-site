@@ -13,14 +13,16 @@
 {{end}}
 
 {{define "officer"}}
-<div class="col-12 col-sm-6 col-md-3 col-lg-2 ury-card">
-  <a href="/people/{{.User.MemberID}}" title="Goto {{.User.Fname}} {{.User.Sname}}'s profile">
-    <div class="user-img my-3">
-      <img class="img-fluid" src="https://ury.org.uk{{.User.Photo}}" alt="Photo of {{.User.Fname}} {{.User.Sname}}">
-    </div>
-    <h4 class="text-center">{{.User.Fname}} {{.User.Sname}}</h4>
-  </a>
-  <h5 class="text-center">{{.Position.Name}}</h5>
+<div class="col-12 col-sm-6 col-md-3 col-lg-2 p-3">
+  <div class="ury-card">
+    <a href="/people/{{.User.MemberID}}" title="Go to {{.User.Fname}} {{.User.Sname}}'s profile">
+      <div class="user-img my-3">
+        <img class="img-fluid" src="https://ury.org.uk{{.User.Photo}}" alt="Photo of {{.User.Fname}} {{.User.Sname}}">
+      </div>
+      <h4 class="text-center">{{.User.Fname}} {{.User.Sname}}</h4>
+    </a>
+    <h5 class="text-center">{{.Position.Name}}</h5>
+  </div>
 </div>
 {{end}}
 
