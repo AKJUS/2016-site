@@ -57,6 +57,14 @@
 .bg-cin {
   background: $cin-background;
   color: $cin-primary;
+
+  a {
+    color: $link-color-cin;
+  }
+}
+
+input.bg-cin::placeholder {
+  color: $cin-primary;
 }
 
 .bg-cin:focus {
