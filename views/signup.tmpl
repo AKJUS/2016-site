@@ -1,0 +1,160 @@
+{{define "title"}}{{.PageContext.ShortName}} | Get Involved{{end}}
+
+{{define "bootstrap"}}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet" integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk" crossorigin="anonymous">
+{{end}}
+
+{{define "ury-styles"}}
+<link rel="stylesheet" href="{{url "/css/signup.css"}}">
+{{end}}
+
+{{define "header-block"}}
+<!-- go templates are annoying and don't let you define an empty block -->
+{{end}}
+
+{{define "content"}}
+{{with .PageData}}
+<main class="mx-2">
+  <form action="/signup/" method="post" target="_top" id="signup-form">
+    <section class="min-vh-100 text-white" id="personal-details">
+      <div class="row flex-md-row-reverse">
+        <div class="col-md">
+          <p>
+            On the next page, you'll be able to book a studio training session. If you don't want to book now, you can always do so later on MyRadio.
+          </p>
+
+          <p>
+            You'll receive an email with details to log into MyRadio once you've signed up, which will allow you to update these details at any time.
+          </p>
+        </div>
+
+        <div class="col-md">
+          <div class="mb-2 form-input">
+            <label for="first-name" class="form-label">First name</label>
+            <input type="text" class="form-control" id="first-name" name="fname">
+          </div>
+          <div class="mb-2 form-input">
+            <label for="last-name" class="form-label">Last name</label>
+            <input type="text" class="form-control" id="last-name" name="sname">
+          </div>
+          <div class="mb-2 form-input">
+            <label for="email" class="form-label">Uni of York Email address</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="email" name="eduroam">
+              <span class="input-group-text">@york.ac.uk</span>
+            </div>
+          </div>
+          <div class="mb-2 form-input">
+            <label for="phone" class="form-label">Mobile Number (optional)</label>
+            <div class="input-group">
+              <input type="tel" class="form-control" id="phone" name="phone">
+            </div>
+          </div>
+          <div class="mb-3 form-input">
+            <label for="collect" class="form-label">College</label>
+              <select id="college" name="collegeid" class="form-select">
+                {{range .Colleges}}
+                  <option value="{{.CollegeId}}">{{.CollegeName}}</option>
+                {{end}}
+              </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row justify-content-center">
+        <a class="btn btn-lg btn-primary" href="#training-slot-select" role="button" id="profile-continue">
+          Next
+        </a>
+      </div>
+    </section>
+
+    <section id="training-slot-select" class="vh-100 text-white d-flex flex-column">
+      <h2>Select a training slot</h2>
+
+      <div class="row flex-column flex-md-row-reverse flex-nowrap mb-2 overflow-hidden">
+        <div class="col-md">
+          <p>
+            Studio training sessions last for about an hour, after which you will be able to request a spot on the schedule and go on air!
+          </p>
+
+          <p>
+            Don't worry if none of these work for you, our trainers will organise more!
+          </p>
+
+          <p>
+            (P.S. This list is scrollable)
+          </p>
+        </div>
+
+        <div class="col-md flex-fill flex-md-1 flex-md-shrink-1 overflow-scroll">
+          <ul class="ps-0 d-flex flex-column gap-2" id="available-trainings">
+            {{ range .Trainings }}
+            {{/* if you change anything in this template, make sure to update it in signup.js too */}}
+            <label class="card h4 is-actual-training-slot" for="training-{{ .DemoID }}">
+              <div class="card-body">
+                <div class="form-check">
+                  {{if eq .AttendeeCount .MaxParticipants}}
+                  <input class="form-check-input training-slot-select" type="radio" name="sessionid" value="{{ .DemoID }}" id="training-{{ .DemoID }}" disabled>
+                  {{else}}
+                  <input class="form-check-input training-slot-select" type="radio" name="sessionid" value="{{ .DemoID }}" id="training-{{ .DemoID }}">
+                  {{end}}
+
+                  <div class="form-check-label">
+                    {{if eq .RemainingSpaces 0}}
+                    <span class="badge rounded-pill text-bg-secondary">
+                    {{else if eq .RemainingSpaces 1}}
+                    <span class="badge rounded-pill text-bg-warning">
+                    {{else}}
+                    <span class="badge rounded-pill text-bg-success">
+                    {{end}}
+                      {{ .AttendeeCount }} / {{ .MaxParticipants }}
+                    </span>
+
+                    {{ .StartTimeRaw }} (with {{ .Host }})
+                  </div>
+                </div>
+              </div>
+            </label>
+            {{ end }}
+
+            <label class="card h4" for="training-unavailable">
+              <div class="card-body">
+                <div class="form-check">
+                  <input class="form-check-input training-slot-select" type="radio" name="sessionid" value="!!unavailable" id="training-unavailable">
+
+                  <div class="form-check-label">
+                    None of these options work for me
+                  </div>
+                </div>
+              </div>
+            </label>
+
+            <label class="card h4" for="training-none">
+              <div class="card-body">
+                <div class="form-check">
+                  <input class="form-check-input training-slot-select" type="radio" name="sessionid" value="" id="training-none">
+
+                  <div class="form-check-label">
+                    I don&apos;t want to book a training session right now
+                  </div>
+                </div>
+              </div>
+            </label>
+          </ul>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row justify-content-center">
+        <input type="submit" class="btn btn-lg btn-primary" id="signup" value="Sign up!">
+      </div>
+    </section>
+  </form>
+</main>
+{{end}}
+{{end}}
+
+{{define "footer-scripts"}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+<script src="{{url "/js/signup.js"}}" type="module"></script>
+{{end}}

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/UniversityRadioYork/2016-site/models"
@@ -21,6 +22,39 @@ type SignUpController struct {
 // session s and configuration context c.
 func NewSignUpController(s *myradio.Session, c *structs.Config) *SignUpController {
 	return &SignUpController{Controller{session: s, config: c}}
+}
+
+func (gic *SignUpController) Get(w http.ResponseWriter, r *http.Request) {
+	gim := models.NewSignUpModel(gic.session)
+
+	colleges, numTeams, listTeamMap, trainings, err := gim.Get()
+
+	if err != nil {
+		//@TODO: Do something proper here, render 404 or something
+		log.Println(err)
+		return
+	}
+
+	//Sort Colleges Alphabetically, with N/A and Unknown at the start
+	sort.Sort(CollegeSorter(colleges))
+
+	data := struct {
+		Colleges    []myradio.College
+		NumTeams    int
+		ListTeamMap map[int]*myradio.Team
+		Trainings   []models.SignUpTrainingSession
+	}{
+		Colleges:    colleges,
+		NumTeams:    numTeams,
+		ListTeamMap: listTeamMap,
+		Trainings:   trainings,
+	}
+
+	err = utils.RenderTemplate(w, gic.config.PageContext, data, "signup.tmpl")
+	if err != nil {
+		log.Println(err)
+		return
+	}
 }
 
 // Post handles the HTTP POST request r for the get involved, writing to w.
@@ -63,10 +97,13 @@ func (gic *SignUpController) Post(w http.ResponseWriter, r *http.Request) {
 		delete(formParams, "phone")
 	}
 
+	var trainingSignupResult int
+
 	//If they are then post them off to the API
 	if len(feedback) == 0 {
 		sm := models.NewSignUpModel(gic.session)
-		created, err := sm.Post(formParams)
+		created, tsr, err := sm.Post(formParams)
+		trainingSignupResult = tsr
 		if err != nil {
 			log.Println(err)
 			feedback = append(feedback, "Oops. Something went wrong on our end.")
@@ -80,9 +117,11 @@ func (gic *SignUpController) Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Feedback []string
+		Feedback             []string
+		TrainingSignupResult int
 	}{
-		Feedback: feedback,
+		Feedback:             feedback,
+		TrainingSignupResult: trainingSignupResult,
 	}
 
 	err := utils.RenderTemplate(w, gic.config.PageContext, data, "signedup.tmpl")
